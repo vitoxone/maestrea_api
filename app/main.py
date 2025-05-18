@@ -686,7 +686,7 @@ async def detect_price_changes(parallel_chunks=4, max_total=5000):
                 await prices_collection.insert_one(new_price_docuemnt)
 
                 if new_price < 0.5 * product["details"]["price"]:
-                    text = f"El producto {product["name"]} ha bajado de {product["details"]["price"]} a {new_price} \n ID: {product["_id"]}"
+                    text = f"El producto {product['name']} ha bajado de {product['details']['price']} a {new_price} \n ID: {product['_id']}"
 
                     send_email(
                         to_email="vitox.one@gmail.com",
@@ -694,7 +694,7 @@ async def detect_price_changes(parallel_chunks=4, max_total=5000):
                         text= text
                     )
                 else:
-                    print(f"cambio de precio menor a 50% en {product["name"]} ID: {product["_id"]}")  
+                    print(f"cambio de precio menor a 50% en {product['name']} ID: {product['_id']}")  
             else:
                 await products_collection.update_one(
                     {"_id": product["_id"]},
