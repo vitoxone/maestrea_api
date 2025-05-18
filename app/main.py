@@ -665,7 +665,7 @@ async def detect_price_changes(parallel_chunks=4, max_total=5000):
 
             print(f"✅ [{thread_id}] Procesado: {product.get('name', product['url'])}")
 
-            print(f"{product["details"]["price"]} / {new_price}")
+            print(f"{product['details']['price']} / {new_price}")
 
             if new_price is None or new_price == 'deleted':
                 await products_collection.update_one(
