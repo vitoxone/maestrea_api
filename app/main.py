@@ -20,6 +20,7 @@ from sqlalchemy.orm import selectinload,joinedload
 from sqlalchemy import func, select, asc, desc, text
 from schemas.Product import ProductWithStore, ProductsPage, ProductRead
 from uuid import UUID
+import aiohttp   
 
 
 
@@ -469,7 +470,7 @@ async def check_url_exists(url: str, max_retries: int = 3, delay: float = 1.0) -
 
     return False  # todos los intentos fallaron
 
-async def complete_product_details(parallel_chunks=1, max_total=5000, db: AsyncSession = Depends(get_db)):
+async def complete_product_details(parallel_chunks, max_total=5000, db: AsyncSession = Depends(get_db)):
     # 1. Obtener productos incompletos una sola vez
     async with async_session() as db:
         result = await db.execute(select(Product).where(Product.status == "incompleto").limit(max_total))
@@ -851,11 +852,12 @@ async def trigger_scrape_overview(
     return {"status": "ok", "message": "Scraping completado"}
 
 @app.post("/complete")
-async def trigger_complete_details(db: AsyncSession = Depends(get_db)):
+async def trigger_complete_details(password: str, threads_number: int,  db: AsyncSession = Depends(get_db)):
 
-    # await load_prices()
+    if(password != 'lmn123'):
+        return {"status": "error", "message": "Contraseña incorrecta"}
 
-    await complete_product_details(parallel_chunks=8, max_total=5000, db=db)
+    await complete_product_details(parallel_chunks=threads_number, max_total=5000, db=db)
     return {"status": "ok", "message": "Detalles completados en paralelo"}
 
 @app.post("/check-prices")
