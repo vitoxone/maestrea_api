@@ -861,7 +861,9 @@ async def trigger_complete_details(password: str, threads_number: int,  db: Asyn
     return {"status": "ok", "message": "Detalles completados en paralelo"}
 
 @app.post("/check-prices")
-async def trigger_price_check():
+async def trigger_price_check(password: str,threads_number: int):
+    if(password != 'lmn123'):
+        return {"status": "error", "message": "Contraseña incorrecta"}
     await detect_price_changes(parallel_chunks=4, max_total=5000)
     return {"status": "ok", "message": "Revisión de precios finalizada"}
 def transform_objectid(obj):
